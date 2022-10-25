@@ -155,7 +155,15 @@ TEST_CASE("Group creation") {
     auto group3b = H5Group::create(group3, gname3); // group to group
 
     REQUIRE_THROWS(H5Group::create(hf, gname2, false));
-
+    
+    CHECK(H5Group::exists(hf, gname1));
+    CHECK(H5Group::exists(hf, gname2));
+    CHECK(H5Group::exists(hf, gname3));
+    CHECK(H5Group::exists(hf, "some") == false);
+    CHECK(H5Group::exists(hf, "/some") == false);
+    CHECK(H5Group::exists(hf, "some/other") == false);
+    CHECK(H5Group::exists(hf, "some/other/longer/asd/some") == false);
+    
     // H5GroupCreateProperty(), H5GroupAccessProperty()
 
     CHECK(group1.is_valid());

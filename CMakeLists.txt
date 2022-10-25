@@ -1,7 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
 
 
-PROJECT(MpiWrapper)
+PROJECT(H5Wrapper)
 
 message("COMPILER ID " ${CMAKE_CXX_COMPILER_ID})
 #INCLUDE(cmake/StandardProjectSettings.cmake)

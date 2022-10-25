@@ -2,10 +2,14 @@
 
 #include <hdf5.h>
 
+#include <sstream>
 #include "h5_location.hpp"
 #include "h5_property.hpp"
 
 namespace H5Wrapper {
+
+
+
 
 class H5Group : public H5Location {
 
@@ -46,10 +50,37 @@ public:
     ///@return H5Group Returns a group identifier if successful
     ///
     static H5Group open(const H5Location& loc, const std::string& name, H5GroupAccessProperty group_ac_prop = H5GroupAccessProperty()){
-
         hid_t id = H5Gopen(~loc, name.c_str(), ~group_ac_prop);
         Utils::runtime_assert(id >= 0, "H5Group open fails.");
         return H5Group(id);
+    }
+    
+    ///
+    ///@brief Queries if a group exists
+    ///
+    ///@param loc  File or group identifier specifying the location of the group to be queried 
+    ///@param name Name of the group to query 
+    ///@return bool true if exists, false otherwise
+    ///
+    static bool exists(const H5Location& loc, std::string name){
+        
+        return H5Lexists_safe(~loc, name.c_str()) == 1;
+    }
+
+
+    static std::vector<std::string> tokenize(std::string path){
+        std::stringstream p(path);
+        std::string segment;
+        std::vector<std::string> tokens;
+
+        while(std::getline(p, segment, '/'))
+        {
+            if (!segment.empty()){
+                tokens.push_back(segment);
+            }
+                
+        }
+        return tokens;
     }
 
     ///
@@ -85,6 +116,36 @@ private:
         auto id = H5Gcreate(~loc, path.c_str(), ~link_p, ~group_cr_p, ~group_ac_p);
         Utils::runtime_assert(id >= 0, "Group create fails.");
         return id;
+    }
+
+    ///
+    ///@brief Extends the H5Lexists to work with paths
+    ///
+    ///@param base base location, typically a file id
+    ///@param path the path to check existence of
+    ///@return int 1 if whole path exists 0 otherwise
+    ///
+    static int H5Lexists_safe(hid_t base, const char* path)
+    {
+        hid_t last = base, next;
+        char* pch;
+        char  pathc[2048];
+        strcpy(pathc, path);
+        pch = strtok(pathc, "/");
+        while (pch != NULL) {
+            int exists = H5Lexists(last, pch, H5P_DEFAULT);
+            if (!exists) {
+                if (last != base) H5Gclose(last);
+                return 0;
+            } else {
+                next = H5Gopen(last, pch, H5P_DEFAULT);
+                if (last != base) H5Gclose(last);
+                last = next;
+            }
+            pch = strtok(NULL, "/");
+        }
+        if (last != base) H5Gclose(last);
+        return 1;
     }
 };
 
