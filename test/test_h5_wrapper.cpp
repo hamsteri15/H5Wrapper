@@ -163,6 +163,7 @@ TEST_CASE("Group creation") {
     CHECK(H5Group::exists(hf, "/some") == false);
     CHECK(H5Group::exists(hf, "some/other") == false);
     CHECK(H5Group::exists(hf, "some/other/longer/asd/some") == false);
+    CHECK(H5Group::exists(hf, "some/other///longer2/asd/some") == false);
     
     // H5GroupCreateProperty(), H5GroupAccessProperty()
 
