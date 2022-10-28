@@ -1,6 +1,7 @@
 #pragma once
 
 #include <hdf5.h>
+#include <cstring>
 
 #include "h5_location.hpp"
 #include "h5_property.hpp"
