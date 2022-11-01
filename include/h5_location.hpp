@@ -2,6 +2,9 @@
 
 #include <hdf5.h>
 
+#include <vector>
+#include <string>
+
 #include "h5_object.hpp"
 #include "h5_property.hpp"
 //#include "h5_data.hpp"
