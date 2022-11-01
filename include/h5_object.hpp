@@ -247,7 +247,7 @@ private:
 ///@return true when the hid_t of both objects are equal
 ///@return false when the hid_t of both objects are not equal
 ///
-bool operator==(const H5Object& lhs, const H5Object& rhs) {
+static inline bool operator==(const H5Object& lhs, const H5Object& rhs) {
     // if one of the object is not valid they are considered as in not-equal
     if ((!rhs.is_valid()) || (!lhs.is_valid())) { return false; }
     return ~lhs == ~rhs;
@@ -261,7 +261,7 @@ bool operator==(const H5Object& lhs, const H5Object& rhs) {
 ///@return true when the hid_t of both objects are not equal
 ///@return false when the hid_t of both objects are equal
 ///
-bool operator!=(const H5Object& lhs, const H5Object& rhs) { return !(lhs == rhs); }
+static inline bool operator!=(const H5Object& lhs, const H5Object& rhs) { return !(lhs == rhs); }
 
 ///
 ///@brief Output operator for checking the type.
@@ -270,7 +270,7 @@ bool operator!=(const H5Object& lhs, const H5Object& rhs) { return !(lhs == rhs)
 ///@param type type info to output
 ///@return std::ostream& modified stream
 ///
-std::ostream& operator<<(std::ostream& stream, const H5Object::Type& type) {
+static inline std::ostream& operator<<(std::ostream& stream, const H5Object::Type& type) {
 
     switch (type) {
     case H5Object::Type::UNINITIALIZED: stream << "UNINITIALIZED"; break;
