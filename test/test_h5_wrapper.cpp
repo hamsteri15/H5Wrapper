@@ -172,6 +172,20 @@ TEST_CASE("Group creation") {
     CHECK(group2.is_valid());
     CHECK(group3.is_valid());
     CHECK(group3b.is_valid());
+
+
+
+    auto link_group = H5Group::create(hf, "link_names_test");
+    auto datatype = H5DatatypeCreator<int>::create();
+    auto dataspace = H5Dataspace::create({1});
+    auto ds1 = H5Dataset::create(link_group, "obj1", datatype, dataspace);
+    auto ds2 = H5Dataset::create(link_group, "obj2", datatype, dataspace);
+    auto ds3 = H5Dataset::create(link_group, "obj3", datatype, dataspace);
+    H5Group::create(link_group, "other_group");
+    
+    CHECK(link_group.link_names() == std::vector<std::string>{"obj1", "obj2", "obj3", "other_group"});
+    CHECK(link_group.dataset_names() == std::vector<std::string>{"obj1", "obj2", "obj3"});
+
 }
 
 

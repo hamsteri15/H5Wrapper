@@ -165,7 +165,6 @@ public:
     ///@return false not in valid state
     ///
     bool is_valid() const {
-        // TODO: what the fuck happens here?
 
         if (m_handle == 0) { return false; }
         htri_t value = H5Iis_valid(m_handle);

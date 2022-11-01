@@ -1,7 +1,7 @@
 #pragma once
 
-#include <hdf5.h>
 #include <cstring>
+#include <hdf5.h>
 
 #include "h5_location.hpp"
 #include "h5_property.hpp"
@@ -70,19 +70,6 @@ public:
         herr_t err = H5Gclose(this->get_handle());
         Utils::runtime_assert(err >= 0, "H5Group close fails.");
     }
-
-    ///
-    ///@brief Gets the number of links (child nodes) in a group
-    ///
-    ///@return size_t number of links
-    ///
-    size_t nlinks() const{
-        H5G_info_t info;
-        auto err = H5Gget_info(~(*this), &info);
-        Utils::runtime_assert(err >= 0, "Failed to get group info.");
-        return info.nlinks;
-    }
-
 
 private:
     H5Group(const H5Location&            loc,
