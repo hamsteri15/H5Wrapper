@@ -141,7 +141,7 @@ public:
     ///
     ///@brief sets the total size in bytes, size, for a datatype.
     ///
-    ///@param size New datatype size in bytes or H5T_VARIABLE
+    ///@param size New datatype size in bytes
     ///
     void set_size(size_t size) {
         herr_t err = H5Tset_size(this->get_handle(), size);

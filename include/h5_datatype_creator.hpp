@@ -1,6 +1,7 @@
 #pragma once
 
 #include "h5_datatype.hpp"
+#include <string>
 
 namespace H5Wrapper {
 
@@ -82,5 +83,15 @@ template <> struct H5DatatypeCreator<bool> {
 
     static H5Datatype create() { return H5Datatype::copy(H5T_NATIVE_HBOOL); }
 };
+
+template <> struct H5DatatypeCreator<std::string> {
+
+    static H5Datatype create(size_t str_len) {
+        auto dt = H5Datatype::copy(H5T_C_S1);
+        dt.set_size(str_len * sizeof(char));
+        return dt;
+    }
+};
+
 
 } // namespace H5Wrapper
