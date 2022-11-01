@@ -136,55 +136,60 @@ TEST_CASE("H5File functionality") {
 
 
 
-TEST_CASE("Group creation") {
+TEST_CASE("Group tests") {
 
     using namespace H5Wrapper;
 
     REQUIRE_NOTHROW(H5Group());
 
     std::string fname  = "group_test1.h5";
-    std::string gname1 = "group1";
-    std::string gname2 = "asd/asdf2/ss";
-    std::string gname3 = "asd/somethingelse";
-
     auto hf      = H5File::create(fname, H5File::CreationFlag::TRUNCATE);
-    auto group1  = H5Group::create(hf, gname1);
-    auto group1b = H5Group::open(hf, gname1);
-    auto group2  = H5Group::create(hf, gname2);
-    auto group3  = H5Group::create(hf, gname3);
-    auto group3b = H5Group::create(group3, gname3); // group to group
 
-    REQUIRE_THROWS(H5Group::create(hf, gname2, false));
-    
-    CHECK(H5Group::exists(hf, gname1));
-    CHECK(H5Group::exists(hf, gname2));
-    CHECK(H5Group::exists(hf, gname3));
-    CHECK(H5Group::exists(hf, "some") == false);
-    CHECK(H5Group::exists(hf, "/some") == false);
-    CHECK(H5Group::exists(hf, "some/other") == false);
-    CHECK(H5Group::exists(hf, "some/other/longer/asd/some") == false);
-    CHECK(H5Group::exists(hf, "some/other///longer2/asd/some") == false);
-    
-    // H5GroupCreateProperty(), H5GroupAccessProperty()
+    SECTION("Group creation and existence"){
+        std::string gname1 = "group1";
+        std::string gname2 = "asd/asdf2/ss";
+        std::string gname3 = "asd/somethingelse";
 
-    CHECK(group1.is_valid());
-    CHECK(group1b.is_valid());
-    CHECK(group2.is_valid());
-    CHECK(group3.is_valid());
-    CHECK(group3b.is_valid());
+        auto group1  = H5Group::create(hf, gname1);
+        auto group1b = H5Group::open(hf, gname1);
+        auto group2  = H5Group::create(hf, gname2);
+        auto group3  = H5Group::create(hf, gname3);
+        auto group3b = H5Group::create(group3, gname3); // group to group
 
+        REQUIRE_THROWS(H5Group::create(hf, gname2, false));
+        
+        CHECK(H5Group::exists(hf, gname1));
+        CHECK(H5Group::exists(hf, gname2));
+        CHECK(H5Group::exists(hf, gname3));
+        CHECK(H5Group::exists(hf, "some") == false);
+        CHECK(H5Group::exists(hf, "/some") == false);
+        CHECK(H5Group::exists(hf, "some/other") == false);
+        CHECK(H5Group::exists(hf, "some/other/longer/asd/some") == false);
+        CHECK(H5Group::exists(hf, "some/other///longer2/asd/some") == false);
+        
+        // H5GroupCreateProperty(), H5GroupAccessProperty()
 
+        CHECK(group1.is_valid());
+        CHECK(group1b.is_valid());
+        CHECK(group2.is_valid());
+        CHECK(group3.is_valid());
+        CHECK(group3b.is_valid());
 
-    auto link_group = H5Group::create(hf, "link_names_test");
-    auto datatype = H5DatatypeCreator<int>::create();
-    auto dataspace = H5Dataspace::create({1});
-    auto ds1 = H5Dataset::create(link_group, "obj1", datatype, dataspace);
-    auto ds2 = H5Dataset::create(link_group, "obj2", datatype, dataspace);
-    auto ds3 = H5Dataset::create(link_group, "obj3", datatype, dataspace);
-    H5Group::create(link_group, "other_group");
-    
-    CHECK(link_group.link_names() == std::vector<std::string>{"obj1", "obj2", "obj3", "other_group"});
-    CHECK(link_group.dataset_names() == std::vector<std::string>{"obj1", "obj2", "obj3"});
+    }
+
+    SECTION("link_names/dataset_names"){
+
+        auto link_group = H5Group::create(hf, "link_names_test");
+        auto datatype = H5DatatypeCreator<int>::create();
+        auto dataspace = H5Dataspace::create({1});
+        auto ds1 = H5Dataset::create(link_group, "obj1", datatype, dataspace);
+        auto ds2 = H5Dataset::create(link_group, "obj2", datatype, dataspace);
+        auto ds3 = H5Dataset::create(link_group, "obj3", datatype, dataspace);
+        H5Group::create(link_group, "other_group");
+        
+        CHECK(link_group.link_names() == std::vector<std::string>{"obj1", "obj2", "obj3", "other_group"});
+        CHECK(link_group.dataset_names() == std::vector<std::string>{"obj1", "obj2", "obj3"});
+    }
 
 }
 
