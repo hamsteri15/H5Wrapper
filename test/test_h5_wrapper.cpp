@@ -1,19 +1,6 @@
 #include "catch.hpp"
 
-#include "h5_object.hpp"
-#include "h5_dataspace.hpp"
-#include "h5_dataspace_scalar.hpp"
-#include "h5_dataspace_hyperslab.hpp"
-#include "h5_dataset.hpp"
-#include "h5_dataspace_all.hpp"
-#include "h5_dataspace_hyperslab.hpp"
-#include "h5_datatype_array.hpp"
-#include "h5_datatype_compound.hpp"
-#include "h5_datatype_creator.hpp"
-#include "h5_file.hpp"
-#include "h5_group.hpp"
-#include "h5_property.hpp"
-#include "is_h5_convertible.hpp"
+#include "h5wrapper.hpp"
 
 
 /*

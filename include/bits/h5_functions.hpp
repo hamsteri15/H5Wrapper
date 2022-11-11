@@ -5,13 +5,6 @@
 #include "runtime_assert.hpp"
 #include "array_cast.hpp"
 
-
-/*
-NOTE! These may be handy:
-https://github.com/BlueBrain/HighFive
-https://github.com/steven-varga/h5cpp
-*/
-
 namespace H5Wrapper{
 
 struct H5{

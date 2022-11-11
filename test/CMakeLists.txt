@@ -3,16 +3,18 @@
 # Build catch mpi main
 add_library(catch_mpi_main STATIC catch_mpi_main.cpp)
 
-#This is required to link against mpi for MPI_Init in main
-target_link_libraries(catch_mpi_main PUBLIC h5_wrapper)
+target_include_directories(catch_mpi_main PUBLIC ${MPI_CXX_INCLUDE_DIRS})
 
+#This is required to link against mpi for MPI_Init in main
+target_link_libraries(catch_mpi_main PUBLIC ${MPI_CXX_LIBRARIES})
 
 SET(TestSources
     test_h5_wrapper.cpp;
 )
 
 add_executable(TestH5Wrapper.bin ${TestSources})
-target_link_libraries(TestH5Wrapper.bin PUBLIC project_options catch_mpi_main h5_wrapper)
+target_include_directories(TestH5Wrapper.bin PUBLIC ${HDF5_INCLUDE_DIRS})
+target_link_libraries(TestH5Wrapper.bin PUBLIC project_options catch_mpi_main ${HDF5_LIBRARIES})
 target_compile_options(TestH5Wrapper.bin PRIVATE -DDEBUG)
 
 #serial execution of mpi code
