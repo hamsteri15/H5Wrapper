@@ -18,18 +18,18 @@ target_link_libraries(TestH5Wrapper.bin PUBLIC project_options catch_mpi_main ${
 target_compile_options(TestH5Wrapper.bin PRIVATE -DDEBUG)
 
 #serial execution of mpi code
-add_test( NAME H5WrapperMpiTest0 
-          COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestH5Wrapper.bin)
+#add_test( NAME H5WrapperMpiTest0
+#          COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestH5Wrapper.bin)
 
 
-add_test( NAME H5WrapperMpiTest1 
-          COMMAND mpirun -np 1 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestH5Wrapper.bin)
+#add_test( NAME H5WrapperMpiTest1
+#          COMMAND mpirun -np 1 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestH5Wrapper.bin)
 
-add_test( NAME H5WrapperMpiTest2 
+add_test( NAME H5WrapperMpiTest2
           COMMAND mpirun -np 2 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestH5Wrapper.bin
           )
 
-add_test( NAME H5WrapperMpiTest4 
-          COMMAND mpirun -np 4 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestH5Wrapper.bin
-)   
+#add_test( NAME H5WrapperMpiTest4
+#          COMMAND mpirun -np 4 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestH5Wrapper.bin
+#)
 

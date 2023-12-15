@@ -16,11 +16,11 @@ TEST_CASE("H5Object constructors"){
     //REQUIRE_NOTHROW(H5Object(H5T_NATIVE_FLOAT));
 
     //after default construction both states should be invalid
-    H5Object lhs; 
+    H5Object lhs;
     H5Object rhs(lhs);
     CHECK(lhs.is_valid() == false);
     CHECK(rhs.is_valid() == false);
-    
+
 }
 
 
@@ -82,7 +82,7 @@ TEST_CASE("H5File functionality") {
     f1.close();
 
     //If the created file is open this fails...
-    CHECK(H5File::is_hdf5(fname)); 
+    CHECK(H5File::is_hdf5(fname));
 
 
     ////////////
@@ -144,7 +144,7 @@ TEST_CASE("Group tests") {
         auto group3b = H5Group::create(group3, gname3); // group to group
 
         REQUIRE_THROWS(H5Group::create(hf, gname2, false));
-        
+
         CHECK(H5Group::exists(hf, gname1));
         CHECK(H5Group::exists(hf, gname2));
         CHECK(H5Group::exists(hf, gname3));
@@ -153,7 +153,7 @@ TEST_CASE("Group tests") {
         CHECK(H5Group::exists(hf, "some/other") == false);
         CHECK(H5Group::exists(hf, "some/other/longer/asd/some") == false);
         CHECK(H5Group::exists(hf, "some/other///longer2/asd/some") == false);
-        
+
         // H5GroupCreateProperty(), H5GroupAccessProperty()
 
         CHECK(group1.is_valid());
@@ -173,7 +173,7 @@ TEST_CASE("Group tests") {
         auto ds2 = H5Dataset::create(link_group, "obj2", datatype, dataspace);
         auto ds3 = H5Dataset::create(link_group, "obj3", datatype, dataspace);
         H5Group::create(link_group, "other_group");
-        
+
         CHECK(link_group.link_names() == std::vector<std::string>{"obj1", "obj2", "obj3", "other_group"});
         CHECK(link_group.dataset_names() == std::vector<std::string>{"obj1", "obj2", "obj3"});
     }
@@ -289,10 +289,10 @@ TEST_CASE("H5Datatype test") {
 
 TEST_CASE("H5Dataspace creation"){
     using namespace H5Wrapper;
-    
+
     REQUIRE_NOTHROW(H5Dataspace());
-    
-    std::vector<size_t> dims{10, 10, 10}; 
+
+    std::vector<size_t> dims{10, 10, 10};
 
     auto ds1 = H5Dataspace::create(dims);
     CHECK(ds1.is_valid());
@@ -303,9 +303,9 @@ TEST_CASE("H5Dataspace creation"){
     auto ds2 = H5DataspaceAll();
     auto ds3 = H5DataspaceScalar();
 
-    //CHECK(ds2.is_valid()); //TODO: It appears that H5S_ALL is not valid... WTF?? 
+    //CHECK(ds2.is_valid()); //TODO: It appears that H5S_ALL is not valid... WTF??
 
-    
+
 }
 
 
@@ -313,10 +313,10 @@ TEST_CASE("H5Dataspace creation"){
 
 TEST_CASE("H5Hyberslab creation"){
     using namespace H5Wrapper;
-    
+
     //REQUIRE_NOTHROW(H5Dataspace());
-    
-    std::vector<size_t> dims{10, 10, 10}; 
+
+    std::vector<size_t> dims{10, 10, 10};
 
     auto ds1 = H5Dataspace::create(dims);
     CHECK(ds1.is_valid());
@@ -328,7 +328,7 @@ TEST_CASE("H5Hyberslab creation"){
     }
 
 
-    
+
 }
 
 
@@ -338,7 +338,7 @@ TEST_CASE("H5Hyberslab creation"){
 TEST_CASE("H5Dataset creation"){
 
     using namespace H5Wrapper;
-    
+
     REQUIRE_NOTHROW(H5Dataset());
 
     std::string fname = "dataset_test1.h5";
@@ -348,7 +348,7 @@ TEST_CASE("H5Dataset creation"){
     auto hf = H5File::create(fname, H5File::CreationFlag::TRUNCATE);
     auto dt = H5DatatypeCreator<int>::create();
     auto file_dataspace = H5Dataspace::create({10, 10, 10});
-    
+
     auto ds1 = H5Dataset::create(hf, dsetname1, dt, file_dataspace);
 
     CHECK(ds1.is_valid());
@@ -359,7 +359,7 @@ TEST_CASE("H5Dataset creation"){
 
     CHECK(ds1_b.is_valid());
 
-    
+
 
 }
 
@@ -368,29 +368,29 @@ TEST_CASE("H5Dataset creation"){
 TEST_CASE("H5Dataset read and write all"){
 
     using namespace H5Wrapper;
-    
+
 
     std::string fname = "dataset_test2.h5";
     std::string dsetname1 = "first";
 
     size_t n_elements = 100;
     std::vector<size_t> buffer_dims{n_elements};
-    
+
 
     //write
     {
         std::vector<int> buffer(n_elements, 50);
-    
+
         CHECK(buffer[0] == 50);
-    
+
         auto hf = H5File::create(fname, H5File::CreationFlag::TRUNCATE);
         auto dt = H5DatatypeCreator<int>::create();
         auto file_dataspace = H5Dataspace::create(buffer_dims);
-        
+
         auto ds1 = H5Dataset::create(hf, dsetname1, dt, file_dataspace);
         ds1.write(buffer.data());
 
-        
+
     }
 
     //read
@@ -407,15 +407,15 @@ TEST_CASE("H5Dataset read and write all"){
         CHECK(ds1.get_dataspace().get_dimensions() == buffer_dims);
 
     }
-    
-    
+
+
 
 }
 
 TEST_CASE("H5Dataset read and write hyperslab"){
 
     using namespace H5Wrapper;
-    
+
 
     std::string fname = "dataset_test3.h5";
     std::string dsetname1 = "first";
@@ -424,24 +424,24 @@ TEST_CASE("H5Dataset read and write hyperslab"){
     std::vector<size_t> buffer_dims{n_elements};
     std::vector<size_t> slab_start = {0};
     std::vector<size_t> slab_extent = {5};
-    
+
     //write
     {
         std::vector<int> buffer(n_elements, 50);
-    
+
         CHECK(buffer[0] == 50);
-    
+
         auto hf = H5File::create(fname, H5File::CreationFlag::TRUNCATE);
         auto dt = H5DatatypeCreator<int>::create();
-        
+
         auto file_dataspace = H5Dataspace::create(slab_extent);
-        
+
         auto ds1 = H5Dataset::create(hf, dsetname1, dt, file_dataspace);
         ds1.write(buffer.data());
 
     }
 
-    
+
     //read
     {
         std::vector<int> buffer(n_elements, 1);
@@ -465,31 +465,29 @@ TEST_CASE("H5Dataset read and write hyperslab"){
 
 
     }
-    
-    
 
 }
 
 TEST_CASE("H5Dataset write hyperslab hyperslab"){
 
     using namespace H5Wrapper;
-    
+
 
     std::string fname = "dataset_test4.h5";
     std::string dsetname1 = "first";
 
-    
+
 
     std::vector<size_t>   global_dims = {10, 10};
 
     std::vector<size_t>   barriers = {2,2};
     std::vector<size_t>   local_interior_dims = {5,5};
     std::vector<size_t>   local_dims = { 2 * barriers[0] + local_interior_dims[0],
-                                         2 * barriers[1] + local_interior_dims[1]}; 
-    
+                                         2 * barriers[1] + local_interior_dims[1]};
 
-    //start writing/reading to/from this index in the global array 
-    std::vector<size_t> start_idx_in_global_array = {0,5}; 
+
+    //start writing/reading to/from this index in the global array
+    std::vector<size_t> start_idx_in_global_array = {0,5};
 
 
     //write
@@ -501,14 +499,14 @@ TEST_CASE("H5Dataset write hyperslab hyperslab"){
 
         CHECK(buffer[0] == 1);
 
-        
-    
+
+
         auto hf = H5File::create(fname, H5File::CreationFlag::TRUNCATE);
         auto dt = H5DatatypeCreator<int>::create();
-        
+
         auto file_dataspace = H5Dataspace::create(global_dims);
         auto file_dataspace2 = H5Hyperslab::select(file_dataspace, start_idx_in_global_array, local_interior_dims);
-        
+
 
         auto memory_dataspace = H5Dataspace::create(local_dims);
         auto memory_dataspace2 = H5Hyperslab::select(memory_dataspace, barriers, local_interior_dims);
@@ -518,7 +516,7 @@ TEST_CASE("H5Dataset write hyperslab hyperslab"){
 
     }
 
-    
+
     //read
     {
 
@@ -528,7 +526,7 @@ TEST_CASE("H5Dataset write hyperslab hyperslab"){
 
         CHECK(buffer[0] == 2);
 
-    
+
         auto hf = H5File::open(fname, H5File::AccessFlag::READ);
         auto ds1 = H5Dataset::open(hf, dsetname1);
 
@@ -546,7 +544,7 @@ TEST_CASE("H5Dataset write hyperslab hyperslab"){
         size_t nj = local_interior_dims[1];
 
         size_t ngc_i = barriers[0];
-        size_t ngc_j = barriers[1]; 
+        size_t ngc_j = barriers[1];
 
         size_t NI = ni + 2*ngc_i;
         size_t NJ = nj + 2*ngc_j;
@@ -572,11 +570,97 @@ TEST_CASE("H5Dataset write hyperslab hyperslab"){
 
 
     }
-    
+
 
 }
 
+static inline size_t mpi_process_count()
+{
+    int world_size;
+    MPI_Comm_size( MPI_COMM_WORLD, &world_size );
+    return size_t(world_size);
+}
 
+static inline size_t mpi_process_rank()
+{
+    int process_id;
+    MPI_Comm_rank( MPI_COMM_WORLD, &process_id );
+    return size_t(process_id);
+}
+
+
+
+TEST_CASE("H5Dataset read and write unstructured"){
+
+    using namespace H5Wrapper;
+
+
+    std::string fname = "dataset_test5.h5";
+    std::string dsetname1 = "first";
+
+    size_t n_local = 5;
+    size_t n_global = n_local * mpi_process_count();
+
+    std::vector<int> data(n_local, int(mpi_process_rank()));
+
+    std::vector<size_t> ids(data.size());
+    for (size_t i = 0; i < ids.size(); ++i){
+        ids[i] = mpi_process_rank() + i;
+    }
+
+
+
+    CHECK(n_global >= n_local);
+    CHECK(ids.back() < n_global);
+
+
+
+    std::vector<size_t> global_dims = {n_global};
+    std::vector<size_t> local_dims = {n_local};
+
+    //write
+    {
+
+
+        auto hf = H5File::create(fname, H5File::CreationFlag::TRUNCATE);
+        auto dt = H5DatatypeCreator<int>::create();
+
+        auto file_dataspace = H5Dataspace::create(global_dims);
+        auto file_dataspace2 = H5Elements::select(file_dataspace, n_local, ids);
+
+
+        auto memory_dataspace = H5Dataspace::create(local_dims);
+        auto ds1 = H5Dataset::create(hf, dsetname1, dt, file_dataspace2);
+        ds1.write(data.data(), memory_dataspace, file_dataspace2);
+
+    }
+
+
+    //read
+    {
+        std::vector<int> buffer(n_global, 1);
+
+
+        auto hf = H5File::open(fname, H5File::AccessFlag::READ);
+        auto ds1 = H5Dataset::open(hf, dsetname1);
+        ds1.read(buffer.data());
+
+        std::vector<int> correct(n_global);
+
+        for (size_t i = 0; i < mpi_process_count(); ++i)
+        {
+            size_t j = n_local * i;
+            correct[j] = i;
+        }
+        CHECK(buffer == correct);
+
+
+        //CHECK(buffer == std::vector<int>(n_local, mpi_process_rank()));
+
+
+    }
+
+}
 
 TEST_CASE("H5Property constructors"){
 
@@ -587,6 +671,6 @@ TEST_CASE("H5Property constructors"){
     H5DatasetAccessProperty t;
 
     CHECK(t.is_valid());
-   
+
 }
 

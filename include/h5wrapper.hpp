@@ -3,6 +3,7 @@
 #include "bits/h5_dataset.hpp"
 #include "bits/h5_dataspace_all.hpp"
 #include "bits/h5_dataspace_hyperslab.hpp"
+#include "bits/h5_dataspace_elements.hpp"
 #include "bits/h5_dataspace_scalar.hpp"
 #include "bits/h5_dataspace.hpp"
 #include "bits/h5_datatype_array.hpp"
