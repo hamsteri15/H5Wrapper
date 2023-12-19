@@ -234,19 +234,7 @@ TEST_CASE("H5DatatypeCreator create") {
 
 
 }
-/*
 
-TEST_CASE("H5DatatypeCreator create jada types") {
-
-    using namespace H5Wrapper;
-
-    H5Datatype dt1 = H5DatatypeCreator<Math::StaticVector<double, 3>>::create();
-    H5Datatype dt2 = H5DatatypeCreator<Math::Vec2d>::create();
-
-    CHECK(dt1.is_valid());
-    CHECK(dt2.is_valid());
-}
-*/
 
 
 TEST_CASE("H5Datatype test") {
