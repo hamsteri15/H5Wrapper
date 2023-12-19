@@ -29,7 +29,7 @@ add_test( NAME H5WrapperMpiTest2
           COMMAND mpirun -np 2 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestH5Wrapper.bin
           )
 
-#add_test( NAME H5WrapperMpiTest4
-#          COMMAND mpirun -np 4 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestH5Wrapper.bin
-#)
+add_test( NAME H5WrapperMpiTest4
+          COMMAND mpirun -np 4 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestH5Wrapper.bin
+)
 

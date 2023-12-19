@@ -9,6 +9,27 @@
 #include "type_traits/is_h5_convertible.hpp"
 */
 
+
+static inline size_t mpi_process_count()
+{
+    int world_size;
+    MPI_Comm_size( MPI_COMM_WORLD, &world_size );
+    return size_t(world_size);
+}
+
+static inline size_t mpi_process_rank()
+{
+    int process_id;
+    MPI_Comm_rank( MPI_COMM_WORLD, &process_id );
+    return size_t(process_id);
+}
+
+static inline void mpi_wait()
+{
+    MPI_Barrier(MPI_COMM_WORLD);
+}
+
+
 TEST_CASE("H5Object constructors"){
     using namespace H5Wrapper;
 
@@ -393,6 +414,8 @@ TEST_CASE("H5Dataset read and write all"){
 
     }
 
+    mpi_wait();
+
     //read
     {
         std::vector<int> buffer(n_elements, 1);
@@ -440,6 +463,8 @@ TEST_CASE("H5Dataset read and write hyperslab"){
         ds1.write(buffer.data());
 
     }
+
+    mpi_wait();
 
 
     //read
@@ -517,6 +542,8 @@ TEST_CASE("H5Dataset write hyperslab hyperslab"){
     }
 
 
+    mpi_wait();
+
     //read
     {
 
@@ -574,19 +601,6 @@ TEST_CASE("H5Dataset write hyperslab hyperslab"){
 
 }
 
-static inline size_t mpi_process_count()
-{
-    int world_size;
-    MPI_Comm_size( MPI_COMM_WORLD, &world_size );
-    return size_t(world_size);
-}
-
-static inline size_t mpi_process_rank()
-{
-    int process_id;
-    MPI_Comm_rank( MPI_COMM_WORLD, &process_id );
-    return size_t(process_id);
-}
 
 
 
@@ -598,17 +612,18 @@ TEST_CASE("H5Dataset read and write unstructured"){
     std::string fname = "dataset_test5.h5";
     std::string dsetname1 = "first";
 
-    size_t n_local = 5;
+    size_t n_local = 3;
     size_t n_global = n_local * mpi_process_count();
 
     std::vector<int> data(n_local, int(mpi_process_rank()));
 
     std::vector<size_t> ids(data.size());
-    for (size_t i = 0; i < ids.size(); ++i){
-        ids[i] = mpi_process_rank() + i;
+    for (size_t i = 0; i < n_local; ++i)
+    {
+        ids[i] = mpi_process_rank()*n_local + i;
     }
-
-
+    //ids[0] = mpi_process_rank() * n_local;
+    //ids[1] = mpi_process_rank() * n_local + 1;
 
     CHECK(n_global >= n_local);
     CHECK(ids.back() < n_global);
@@ -636,6 +651,8 @@ TEST_CASE("H5Dataset read and write unstructured"){
     }
 
 
+    mpi_wait();
+
     //read
     {
         std::vector<int> buffer(n_global, 1);
@@ -647,16 +664,15 @@ TEST_CASE("H5Dataset read and write unstructured"){
 
         std::vector<int> correct(n_global);
 
-        for (size_t i = 0; i < mpi_process_count(); ++i)
+        size_t j = 0;
+        for (size_t i = 0; i < n_global; i += n_local)
         {
-            size_t j = n_local * i;
-            correct[j] = i;
+            for (size_t k = 0; k < n_local; ++k){
+                correct[i + k] = j;
+            }
+            j++;
         }
         CHECK(buffer == correct);
-
-
-        //CHECK(buffer == std::vector<int>(n_local, mpi_process_rank()));
-
 
     }
 
