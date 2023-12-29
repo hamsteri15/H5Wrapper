@@ -16,6 +16,11 @@ public:
     H5Elements() = default;
 
 
+    static H5Elements select(const H5Dataspace& parent, dims_array indices)
+    {
+        return H5Elements::select(parent, indices.size(), indices);
+    }
+
 
     static H5Elements select(const H5Dataspace& parent, size_t count, dims_array indices)
     {
@@ -36,6 +41,12 @@ private:
         hid_t id = parent.clone_handle();
 
 
+        if (count == 0 && indices.size() == 0){
+            auto err = H5Sselect_none(id);
+            Utils::runtime_assert(err >= 0, "HDF5 none type element selection fails.");
+            return id;
+        }
+
         auto err = H5Sselect_elements
         (
             id,
@@ -43,7 +54,8 @@ private:
             count,
             cast(indices).data()
         );
-        Utils::runtime_assert(err >= 0, "Select elements fails");
+        Utils::runtime_assert(err >= 0, "HDF5 element selection fails.");
+
         return id;
     }
 

@@ -342,7 +342,35 @@ TEST_CASE("H5Hyberslab creation"){
 
 }
 
+TEST_CASE("H5Elements creation"){
 
+    using namespace H5Wrapper;
+
+    //REQUIRE_NOTHROW(H5Dataspace());
+
+    std::vector<size_t> dims{10};
+
+    auto ds1 = H5Dataspace::create(dims);
+    CHECK(ds1.is_valid());
+
+    {
+        auto hs = H5Elements::select(ds1, 3, std::vector<size_t>{1,2,3});
+        CHECK(hs.is_valid());
+    }
+    {
+        std::vector<size_t> elements{};
+        size_t count = 0;
+        auto hs = H5Elements::select(ds1, count, elements);
+        CHECK(hs.is_valid());
+    }
+
+    {
+        std::vector<size_t> elements{};
+        auto hs = H5Elements::select(ds1,  elements);
+        CHECK(hs.is_valid());
+    }
+
+}
 
 
 
